@@ -1,8 +1,16 @@
 import { useState } from 'react'
 
-const StatisticLine = ({ value, text }) => <div> {text} {value}</div>
-const Header = () => {return(<h1>give feedback</h1>)}
-const Header2 = () => { return(<h1>statistics</h1>)}
+const StatisticLine = ({ value, text }) => {
+  return(
+<tbody>
+  <tr>
+    <td>{text}</td> 
+    <td>{value}</td>
+  </tr>
+</tbody>
+  )
+}
+const Header = ({text}) => {return(<h1>{text}</h1>)}
 
 const Statistics = ({ good, bad, neutral }) => {
   if ((good || bad || neutral) === 0) {
@@ -14,14 +22,14 @@ const Statistics = ({ good, bad, neutral }) => {
   }
 
   return(
-    <div>
-      <StatisticLine value={good} text='good'/>
-      <StatisticLine value={neutral} text='neutral'/>
-      <StatisticLine value={bad} text='bad'/>
-      <StatisticLine value={good + neutral + bad} text='all'/>
-      <StatisticLine value={(good - bad)/(good + neutral + bad)} text='average'/>
-      <StatisticLine value={(good/(good + bad + neutral) * 100) + " %" } text='positive'/>
-    </div>
+    <table>
+          <StatisticLine value={good} text='good'/>
+          <StatisticLine value={neutral} text='neutral'/>
+          <StatisticLine value={bad} text='bad'/>
+          <StatisticLine value={good + neutral + bad} text='all'/>
+          <StatisticLine value={(good - bad)/(good + neutral + bad)} text='average'/>
+          <StatisticLine value={(good/(good + bad + neutral) * 100) + " %" } text='positive'/>
+    </table>
   )
 }
 
@@ -43,11 +51,11 @@ const App = () => {
 
   return (
     <div>
-      <Header/>
+      <Header text='give feedback'/>
       <Button handleClick={handleGood} text='good'/>
       <Button handleClick={handleNeutral} text='neutral'/>
       <Button handleClick={handleBad} text='bad'/>
-      <Header2/>
+      <Header text='statistics'/>
       <Statistics good={good} neutral={neutral} bad={bad}/>
     </div>
   )
