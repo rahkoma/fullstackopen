@@ -35,7 +35,7 @@ const App = () => {
       <Header text='Anecdote of the day'/>
       <Display selected={selected} anecdotes={anecdotes}/>
       <VoteCount vote={votes} selected={selected}/>
-      <Button onClick={handleVotes} text='rääh'/>
+      <Button onClick={handleVotes} text='vote'/>
       <Button onClick={handleSelect} text='next anecdote'/>
       <Header text='Anecdote with most votes'/>
       <Display selected={indexOfMax} anecdotes={anecdotes}/>
