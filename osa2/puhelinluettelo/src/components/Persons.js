@@ -1,4 +1,4 @@
-const Person = ({persons}) => {
+const Persons = ({persons}) => {
     return(
         <div>
         {persons.map(person =>
@@ -8,4 +8,4 @@ const Person = ({persons}) => {
     )
 }
 
-export default Person
+export default Persons
