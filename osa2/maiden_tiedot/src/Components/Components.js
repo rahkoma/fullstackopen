@@ -1,3 +1,5 @@
+import {Parsedata} from './Parsedata.js'
+
 const Filter = ({newFilter, handleFilter}) =>
     <form>
         <div>find countries 
@@ -7,24 +9,26 @@ const Filter = ({newFilter, handleFilter}) =>
             />
         </div>   
     </form>
+  
+const Weather = ({weather}) => {
+  console.log(weather)
+}
 
-
-const Countries = ({countries}) => {
+const Countries = ({countries, handleClick, capital, area, name, flag, language}) => {
   console.log(countries.length)
   console.log(countries)
-  if(countries.length == 1) {
+  if(countries.length === 1) {
     return(
       <>
-        <h1>{countries[0].name.common}</h1>
-        <div>capital {countries[0].capital}</div>
-        <div>area {countries[0].area}</div>
+        <h1>{name}</h1>
+        <div>capital {capital}</div>
+        <div>area {area}</div>
         <h3>languages:</h3>
         <ul>
-          {Object.values(countries[0].languages).map( language =>
+          {Object.values(language).map( language =>
             <li key={language}> {language} </li>)}
         </ul>
-        <img src={countries[0].flags.png} alt="Flag" />
-        
+        <img src={flag} alt="Flag" />
       </>
     )}
 
@@ -32,7 +36,7 @@ const Countries = ({countries}) => {
     return(
       <>
       {countries.map(country =>
-          <div key={country.name.common}> {country.name.common} </div>
+          <div key={country.name.common}> {country.name.common} <button value={country.name.common} onClick={handleClick}>show</button></div>
           )}
       </>
     )}
@@ -42,4 +46,4 @@ const Countries = ({countries}) => {
       )}
 }
 
-export {Filter, Countries};
+export {Filter, Countries, Weather};
