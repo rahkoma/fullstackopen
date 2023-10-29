@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import Persons from './components/Persons'
 import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
 import personService from './services/persons'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -11,6 +11,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
   const [showFilter, setShowFilter] = useState(true)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
     personService
@@ -32,6 +33,26 @@ const App = () => {
     setNewFilter(event.target.value)
     setShowFilter(false)
   }
+
+  const handleDelete = personId => {
+    const personToDelete = persons.find(n => n.id === personId)
+    console.log(personToDelete)
+    console.log(personId)
+    
+    if (window.confirm(`Delete ${personToDelete.name}?`)) {
+      personService
+        .deletePerson(personId)
+      
+      setPersons(persons.filter(person => person.id !== personId))
+      
+      setErrorMessage(
+        `Person '${personToDelete.name}' was deleted`
+      )
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+  }
   
   const personsToShow = showFilter
   ? persons
@@ -40,19 +61,49 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault()
     const isSame = persons.some(person => person.name === newName)
+    const personToUpdate = persons.find(person => person.name === newName)
+    const updatedPerson = { ...personToUpdate, number: newNumber }
+    
+    if (isSame) {
+      if (window.confirm(`${newName} is already on the phonebook, replace old number with new one?`)) {
+        personService
+          .update(personToUpdate.id, updatedPerson)
+          .then(returnedPerson => {
+            setPersons(persons.map(person => person.id !== personToUpdate.id ? person : returnedPerson))
+            setNewName('')
+            setNewNumber('')
 
-    if (isSame) { window.alert(`${newName} is already on the phonebook`) }
+            setErrorMessage(
+              `Person '${personToUpdate.name}' was updated`
+            )
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 5000)
+          })
+      } else {
+        setNewName('')
+        setNewNumber('')
+      }
+    }
     else {
       const personObject = {
         name: newName,
         number: newNumber
       }
+      
       personService
         .create(personObject)
         .then(returnedPerson => {  
           setPersons(persons.concat(returnedPerson))
           setNewName('')
           setNewNumber('')
+          
+          setErrorMessage(
+            `Person '${personObject.name}' was added`
+          )
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
       })
     }
   }
@@ -60,6 +111,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+        <Notification message={errorMessage} />
         <Filter newFilter={newFilter} handleFilter={handleFilterChange} />
       <h2>add a new</h2>
         <PersonForm 
@@ -70,10 +122,10 @@ const App = () => {
         number={newNumber} 
         />
       <h2>Numbers</h2>
-        <Persons persons={personsToShow}  />
+        <Persons persons={personsToShow} handleDelete={handleDelete} />
+      
     </div>
   )
-
 }
 
 export default App
